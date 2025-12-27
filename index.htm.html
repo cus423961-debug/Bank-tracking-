@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Transfer Dashboard</title>
+
+<style>
+  body{
+    font-family: Arial, sans-serif;
+    background:#f4f6f9;
+    margin:0;
+    padding:20px;
+  }
+  .card{
+    background:#fff;
+    max-width:420px;
+    margin:auto;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0 4px 10px rgba(0,0,0,0.1);
+  }
+  h2{text-align:center;margin-bottom:10px;}
+  .center{text-align:center;}
+  .badge{
+    display:inline-block;
+    background:#f1c40f;
+    color:#7d6608;
+    padding:6px 12px;
+    border-radius:20px;
+    font-size:13px;
+    font-weight:bold;
+    margin-bottom:12px;
+  }
+  .amount{
+    font-size:28px;
+    font-weight:bold;
+    margin:10px 0 5px;
+  }
+  .name{
+    font-size:14px;
+    color:#555;
+    margin-bottom:10px;
+  }
+  .status{
+    color:#c0392b;
+    font-weight:bold;
+    margin-bottom:8px;
+  }
+  .datetime{
+    font-size:13px;
+    color:#666;
+    margin-bottom:15px;
+  }
+  .section-title{
+    font-size:15px;
+    font-weight:bold;
+    margin:15px 0 8px;
+  }
+  .detail{
+    font-size:14px;
+    color:#333;
+    margin-bottom:6px;
+  }
+  .disabled-btn{
+    width:100%;
+    padding:14px;
+    font-size:16px;
+    background:#cccccc;
+    color:#666666;
+    border:none;
+    border-radius:6px;
+    cursor:not-allowed;
+    font-weight:bold;
+    margin:15px 0 12px;
+  }
+  select{
+    width:100%;
+    padding:10px;
+    border-radius:6px;
+    border:1px solid #ccc;
+    margin-bottom:10px;
+  }
+  .note{
+    font-size:12px;
+    color:#666;
+    text-align:center;
+  }
+</style>
+</head>
+
+<body>
+<div class="card">
+  <h2 id="title">Transfer Dashboard</h2>
+
+  <div class="center">
+    <div class="badge" id="badge">Pending Approval</div>
+
+    <div class="amount" id="amount">₦0.00</div>
+    <div class="name" id="sender">—</div>
+
+    <div class="status" id="status">Transfer Not Activated</div>
+    <div class="datetime" id="datetime"></div>
+  </div>
+
+  <div class="section-title" id="detailsTitle">Transaction Details</div>
+
+  <div class="detail">
+    <strong id="recipientLabel">PORINS GATIS</strong>
+    <span id="recipient">—</span>
+  </div>
+
+  <div class="detail">
+    <strong id="bankLabel">Bank Name:</strong>
+    <span id="bank">—</span>
+  </div>
+
+  <button class="disabled-btn" disabled id="button">
+    Activate Transfer (Disabled)
+  </button>
+
+  <select onchange="changeLanguage(this.value)">
+    <option value="en">English</option>
+    <option value="ro">Romanian</option>
+    <option value="hr">Croatian</option>
+    <option value="lv">Latvian</option>
+    <option value="es">Spanish</option>
+  </select>
+
+  <div class="note" id="note">
+   pay the required fee to complete the transaction.
+  </div>
+</div>
+
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const amount = params.get("amount") || "0";
+  const sender = params.get("name") || "—";
+  const recipient = params.get("PORINS GATIS") || "—";
+  const bank = params.get("bank") || "—";
+  const lang = params.get("lang") || "en";
+
+  document.getElementById("amount").innerText =
+    "€15,500.3" + Number(amount).toLocaleString();
+  document.getElementById("sender").innerText = sender;
+  document.getElementById("recipient").innerText = recipient;
+  document.getElementById("bank").innerText = bank;
+
+  const now = new Date();
+  document.getElementById("datetime").innerText =
+    now.toLocaleDateString() + " • " + now.toLocaleTimeString();
+
+  const text = {
+    en:{
+      title:"Transfer Dashboard",
+      badge:"Pending Approval",
+      status:"Transfer Not Activated",
+      details:"Transaction Details",
+      recipient:"PORINS GATIS:",
+      bank:"LV29UNLA0055005567959!",
+      button:"Activate Transfer (Disabled)",
+      note:"Pay the required fee to complete the transaction."
+    },
+    ro:{
+      title:"Tablou de transfer",
+      badge:"În așteptarea aprobării",
+      status:"Transfer neactivat",
+      details:"Detalii tranzacție",
+      recipient:"Nume destinatar:",
+      bank:"Numele băncii:",
+      button:"Activare transfer (dezactivat)",
+      note:"Aceasta este doar o demonstrație."
+    },
+    hr:{
+      title:"Nadzorna ploča prijenosa",
+      badge:"Na čekanju odobrenja",
+      status:"Prijenos nije aktiviran",
+      details:"Detalji transakcije",
+      recipient:"Ime primatelja:",
+      bank:"Naziv banke:",
+      button:"Aktiviraj prijenos (onemogućeno)",
+      note:"Ovo je samo demonstracija."
+    },
+    lv:{
+      title:"Pārskaitījumu panelis",
+      badge:"Gaida apstiprinājumu",
+      status:"Pārskaitījums nav aktivizēts",
+      details:"Darījuma detaļas",
+      recipient:"Saņēmēja vārds:",
+      bank:"Bankas nosaukums:",
+      button:"Aktivizēt pārskaitījumu (atspējots)",
+      note:"Šis ir tikai demonstrācijas attēlojums."
+    },
+    es:{
+      title:"Panel de transferencia",
+      badge:"Pendiente de aprobación",
+      status:"Transferencia no activada",
+      details:"Detalles de la transacción",
+      recipient:"Nombre del destinatario:",
+      bank:"Nombre del banco:",
+      button:"Activar transferencia (deshabilitado)",
+      note:"Esto es solo una demostración."
+    }
+  };
+
+  function applyLanguage(l){
+    document.getElementById("title").innerText = text[l].title;
+    document.getElementById("badge").innerText = text[l].badge;
+    document.getElementById("status").innerText = text[l].status;
+    document.getElementById("detailsTitle").innerText = text[l].details;
+    document.getElementById("recipientLabel").innerText = text[l].recipient;
+    document.getElementById("bankLabel").innerText = text[l].bank;
+    document.getElementById("button").innerText = text[l].button;
+    document.getElementById("note").innerText = text[l].note;
+  }
+
+  function changeLanguage(l){ applyLanguage(l); }
+  applyLanguage(lang);
+</script>
+</body>
+</html>
